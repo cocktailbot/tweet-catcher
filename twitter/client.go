@@ -1,6 +1,7 @@
 package twitter
 
 import (
+	"encoding/json"
 	"log"
 	"os"
 	"os/signal"
@@ -28,7 +29,7 @@ func Create(c Config) *twitter.Client {
 }
 
 // Stream tweets containing keywords to callback
-func Stream(client *twitter.Client, keywords []string, callback func(interface{})) {
+func Stream(client *twitter.Client, keywords []string, callback func([]byte)) {
 	params := &twitter.StreamFilterParams{
 		Track:         keywords,
 		StallWarnings: twitter.Bool(true),
@@ -42,7 +43,12 @@ func Stream(client *twitter.Client, keywords []string, callback func(interface{}
 	demux := twitter.NewSwitchDemux()
 	demux.Tweet = func(tweet *twitter.Tweet) {
 		if !tweet.Retweeted {
-			callback(tweet)
+			// Convert tweet to json byte array
+			jsn, err := json.Marshal(tweet)
+			if err != nil {
+				panic(err)
+			}
+			callback(jsn)
 		}
 	}
 

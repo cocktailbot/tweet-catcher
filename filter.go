@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 
@@ -29,14 +28,9 @@ func main() {
 		AccessSecret:   os.Getenv("COCKTAILBOT_TWITTER_ACCESS_TOKEN_SECRET"),
 	}
 	client := twitter.Create(config)
-	twitter.Stream(client, keywords, func(tweet interface{}) {
-		// Convert tweet to json
-		jsn, err := json.Marshal(tweet)
-		if err != nil {
-			panic(err)
-		}
-
-		algolia.Index(algoliaClient, "tweets", jsn)
+	twitter.Stream(client, keywords, func(tweet []byte) {
+		fmt.Print(string(tweet[:]))
+		algolia.Index(algoliaClient, "TWEETS", tweet)
 	})
 }
 

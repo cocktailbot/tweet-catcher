@@ -1,5 +1,5 @@
 
 
-Running Twutter Stream filter
+Running Twitter Stream filter
 
     set -o allexport; source .env; set +o allexport

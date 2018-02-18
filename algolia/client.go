@@ -21,12 +21,12 @@ func Create(c Config) algoliasearch.Client {
 func Index(client algoliasearch.Client, index string, jsn []byte) {
 	indx := client.InitIndex(index)
 
-	var objects []algoliasearch.Object
-	if err := json.Unmarshal(jsn, &objects); err != nil {
+	var object algoliasearch.Object
+	if err := json.Unmarshal(jsn, &object); err != nil {
 		panic(err)
 	}
 
-	_, err := indx.AddObjects(objects)
+	_, err := indx.AddObject(object)
 	if err != nil {
 		panic(err)
 	}

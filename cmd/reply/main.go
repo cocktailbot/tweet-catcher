@@ -26,7 +26,7 @@ func main() {
 		AccessToken:    os.Getenv("COCKTAILBOT_TWITTER_ACCESS_TOKEN"),
 		AccessSecret:   os.Getenv("COCKTAILBOT_TWITTER_ACCESS_TOKEN_SECRET"),
 	})
-	recent := tweetsClient.Search("tweets", "", 1, 10)
+	recent := tweetsClient.Search("TWEETS", "", 1, 10)
 	var replied []string
 
 	for _, el := range recent {

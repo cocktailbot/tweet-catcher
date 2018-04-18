@@ -71,3 +71,14 @@ func Tweet(client *twitter.Client, message string) {
 		panic(err)
 	}
 }
+
+// Reply to an existing message
+func Reply(client *twitter.Client, message string, tweetID int64) {
+	params := twitter.StatusUpdateParams{
+		InReplyToStatusID: tweetID,
+	}
+	_, _, err := client.Statuses.Update(message, &params)
+	if err != nil {
+		panic(err)
+	}
+}

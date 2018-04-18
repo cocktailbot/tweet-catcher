@@ -27,10 +27,10 @@ func main() {
 		AccessToken:    os.Getenv("COCKTAILBOT_TWITTER_ACCESS_TOKEN"),
 		AccessSecret:   os.Getenv("COCKTAILBOT_TWITTER_ACCESS_TOKEN_SECRET"),
 	}
-	client := twitter.Create(config)
-	twitter.Stream(client, keywords, func(tweet []byte) {
+	tc := twitter.Create(config)
+	twitter.Stream(tc, keywords, func(tweet []byte) {
 		fmt.Print(string(tweet[:]))
-		algolia.Index(algoliaClient, "TWEETS", tweet)
+		algoliaClient.IndexJSON("TWEETS", tweet)
 	})
 }
 

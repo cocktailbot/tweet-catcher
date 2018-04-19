@@ -18,6 +18,7 @@ func main() {
 	algoliaConfig := algolia.Config{
 		APIKey: os.Getenv("COCKTAILBOT_ALGOLIA_API_KEY"),
 		AppID:  os.Getenv("COCKTAILBOT_ALGOLIA_APP_ID"),
+		Env:    os.Getenv("COCKTAILBOT_ENV"),
 	}
 	algoliaClient := algolia.Create(algoliaConfig)
 

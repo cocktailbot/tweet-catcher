@@ -7,6 +7,8 @@ import (
 	"os/signal"
 	"syscall"
 
+	"fmt"
+
 	"github.com/dghubble/go-twitter/twitter"
 	"github.com/dghubble/oauth1"
 )
@@ -77,7 +79,11 @@ func Reply(client *twitter.Client, message string, tweetID int64) {
 	params := twitter.StatusUpdateParams{
 		InReplyToStatusID: tweetID,
 	}
-	_, _, err := client.Statuses.Update(message, &params)
+	fmt.Printf("Replying #%v \n", params)
+	t, res, err := client.Statuses.Update(message, &params)
+	fmt.Printf("#%v\n", t)
+	fmt.Printf("Reply to after sending: #%v\n", t.InReplyToStatusID)
+	fmt.Printf("#%v\n", res)
 	if err != nil {
 		panic(err)
 	}

@@ -8,6 +8,12 @@
   version = "2.21.3"
 
 [[projects]]
+  name = "github.com/bbalet/stopwords"
+  packages = ["."]
+  revision = "a6a172105d2ac809a045fbc02db38460d4506216"
+  version = "v1.0.0"
+
+[[projects]]
   name = "github.com/cenkalti/backoff"
   packages = ["."]
   revision = "61153c768f31ee5f130071d08fc82b85208528de"
@@ -43,9 +49,24 @@
   packages = ["context"]
   revision = "136a25c244d3019482a795d728110278d6ba09a4"
 
+[[projects]]
+  name = "golang.org/x/text"
+  packages = [
+    "internal/gen",
+    "internal/tag",
+    "internal/triegen",
+    "internal/ucd",
+    "language",
+    "transform",
+    "unicode/cldr",
+    "unicode/norm"
+  ]
+  revision = "f21a4dfb5e38f5895301dc265a8def02365cc3d0"
+  version = "v0.3.0"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "1d5657ca7cefa0eafd1ff42015789b15df792d2bcb7a96841ac4365b7cebe313"
+  inputs-digest = "c68600c8690f0abfdfb2088f7c25737216dde0481c0940aae0eccbc029e6a55d"
   solver-name = "gps-cdcl"
   solver-version = 1

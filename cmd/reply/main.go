@@ -1,10 +1,9 @@
 package main
 
 import (
-	"os"
-
 	"fmt"
-
+	"math/rand"
+	"os"
 	"strconv"
 
 	"github.com/bbalet/stopwords"
@@ -45,13 +44,21 @@ func main() {
 		id, _ := strconv.ParseInt(el["id_str"].(string), 10, 64)
 		objectID := el["objectID"].(string)
 		text = stopwords.CleanString(text, "en", true)
-		match := recipesClient.Search(indexRecipes, []string{"url", "title", "search"}, text, 0, 1)
+		fields := []string{"url", "title", "search"}
+		matches := recipesClient.Search(indexRecipes, fields, text, 0, 5)
 
-		if len(match) > 0 {
-			title := match[0]["title"].(string)
-			url := match[0]["url"].(string)
+		if len(matches) > 0 {
+			match := matches[rand.Intn(len(matches)-1)]
+			title := match["title"].(string)
+			url := match["url"].(string)
 			message := fmt.Sprintf("Hey @%s, try %s %s", author, title, url)
-			fmt.Println(message + " in " + match[0]["search"].(string))
+			fmt.Println(message + " in " + match["search"].(string))
+			twitter.Reply(twitterClient, message, id)
+		} else {
+			fmt.Println("No match: " + text)
+			message := fmt.Sprintf(
+				"Well @%s, we couldn't find a match 🧐. Try some other ingredients!",
+				author)
 			twitter.Reply(twitterClient, message, id)
 		}
 		replied = append(replied, objectID)

@@ -48,7 +48,6 @@ func main() {
 		match := recipesClient.Search("local_recipes", []string{"url", "title", "search"}, text, 0, 1)
 
 		if len(match) > 0 {
-			// match["url"]
 			ts := time.Now().Format(time.RFC850)
 			message := fmt.Sprintf("Hey @%s, try %s %s %s", author, match[0]["title"].(string), match[0]["url"].(string), ts)
 			fmt.Println(message + " in " + match[0]["search"].(string))
@@ -59,6 +58,6 @@ func main() {
 
 	if len(replied) > 0 {
 		fmt.Printf("Deleting #%v\n", replied)
-		//tweetsClient.DeleteByIds("TWEETS", replied)
+		tweetsClient.DeleteByIds("TWEETS", replied)
 	}
 }

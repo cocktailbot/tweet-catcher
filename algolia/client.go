@@ -3,6 +3,8 @@ package algolia
 import (
 	"encoding/json"
 
+	"fmt"
+
 	"github.com/algolia/algoliasearch-client-go/algoliasearch"
 )
 
@@ -16,16 +18,17 @@ type Config struct {
 // Client for connecting
 type Client struct {
 	Connection algoliasearch.Client
+	Config     Config
 }
 
 // Create a client
 func Create(c Config) Client {
-	return Client{Connection: algoliasearch.NewClient(c.AppID, c.APIKey)}
+	return Client{Connection: algoliasearch.NewClient(c.AppID, c.APIKey), Config: c}
 }
 
 // IndexJSON json string into the search service
 func (c Client) IndexJSON(index string, jsn []byte) {
-	idx := c.Connection.InitIndex(index)
+	idx := c.Connection.InitIndex(indexPrefix(c.Config.Env) + index)
 
 	var object algoliasearch.Object
 	if err := json.Unmarshal(jsn, &object); err != nil {
@@ -40,7 +43,7 @@ func (c Client) IndexJSON(index string, jsn []byte) {
 
 // Search a given index for items matching query
 func (c Client) Search(index string, fields []string, sentence string, page int, perPage int) []algoliasearch.Map {
-	idx := c.Connection.InitIndex(index)
+	idx := c.Connection.InitIndex(indexPrefix(c.Config.Env) + index)
 	params := algoliasearch.Map{
 		"attributesToRetrieve": fields,
 		"hitsPerPage":          perPage,
@@ -59,7 +62,7 @@ func (c Client) Search(index string, fields []string, sentence string, page int,
 
 // DeleteByIds remove objects matching given ids
 func (c Client) DeleteByIds(index string, ids []string) {
-	idx := c.Connection.InitIndex(index)
+	idx := c.Connection.InitIndex(indexPrefix(c.Config.Env) + index)
 	res, err := idx.DeleteObjects(ids)
 
 	if err != nil {
@@ -71,4 +74,8 @@ func (c Client) DeleteByIds(index string, ids []string) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func indexPrefix(env string) string {
+	return fmt.Sprintf("%s_", env)
 }

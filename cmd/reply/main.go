@@ -5,8 +5,6 @@ import (
 
 	"fmt"
 
-	"time"
-
 	"strconv"
 
 	"github.com/bbalet/stopwords"
@@ -15,6 +13,8 @@ import (
 )
 
 func main() {
+	indexTweets := os.Getenv("COCKTAILBOT_ALGOLIA_INDEX_TWEETS")
+	indexRecipes := os.Getenv("COCKTAILBOT_ALGOLIA_INDEX_RECIPES")
 	tweetsClient := algolia.Create(algolia.Config{
 		APIKey: os.Getenv("COCKTAILBOT_ALGOLIA_API_KEY"),
 		AppID:  os.Getenv("COCKTAILBOT_ALGOLIA_APP_ID"),
@@ -32,7 +32,7 @@ func main() {
 		AccessSecret:   os.Getenv("COCKTAILBOT_TWITTER_ACCESS_TOKEN_SECRET"),
 	})
 	recent := tweetsClient.Search(
-		"TWEETS",
+		indexTweets,
 		[]string{"objectID", "user.screen_name", "id_str", "text"},
 		"",
 		0,
@@ -45,11 +45,12 @@ func main() {
 		id, _ := strconv.ParseInt(el["id_str"].(string), 10, 64)
 		objectID := el["objectID"].(string)
 		text = stopwords.CleanString(text, "en", true)
-		match := recipesClient.Search("local_recipes", []string{"url", "title", "search"}, text, 0, 1)
+		match := recipesClient.Search(indexRecipes, []string{"url", "title", "search"}, text, 0, 1)
 
 		if len(match) > 0 {
-			ts := time.Now().Format(time.RFC850)
-			message := fmt.Sprintf("Hey @%s, try %s %s %s", author, match[0]["title"].(string), match[0]["url"].(string), ts)
+			title := match[0]["title"].(string)
+			url := match[0]["url"].(string)
+			message := fmt.Sprintf("Hey @%s, try %s %s", author, title, url)
 			fmt.Println(message + " in " + match[0]["search"].(string))
 			twitter.Reply(twitterClient, message, id)
 		}
@@ -58,6 +59,6 @@ func main() {
 
 	if len(replied) > 0 {
 		fmt.Printf("Deleting #%v\n", replied)
-		tweetsClient.DeleteByIds("TWEETS", replied)
+		tweetsClient.DeleteByIds(indexTweets, replied)
 	}
 }

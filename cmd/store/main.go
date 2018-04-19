@@ -14,7 +14,7 @@ func main() {
 		return
 	}
 	keywords := os.Args[1:]
-
+	indexTweets := os.Getenv("COCKTAILBOT_ALGOLIA_INDEX_TWEETS")
 	algoliaConfig := algolia.Config{
 		APIKey: os.Getenv("COCKTAILBOT_ALGOLIA_API_KEY"),
 		AppID:  os.Getenv("COCKTAILBOT_ALGOLIA_APP_ID"),
@@ -31,7 +31,7 @@ func main() {
 	tc := twitter.Create(config)
 	twitter.Stream(tc, keywords, func(tweet []byte) {
 		fmt.Print(string(tweet[:]))
-		algoliaClient.IndexJSON("TWEETS", tweet)
+		algoliaClient.IndexJSON(indexTweets, tweet)
 	})
 }
 
